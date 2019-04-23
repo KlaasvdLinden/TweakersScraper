@@ -5,8 +5,11 @@ from prettytable import PrettyTable
 
 
 def get_response(keyword):
-    link = "https://tweakers.net/aanbod/zoeken/?keyword=" + keyword
-    link = link.replace(" ", "%20")
+    if keyword == "latest":
+        link = "https://tweakers.net/categorie/638/games/aanbod/"
+    else:
+        link = "https://tweakers.net/aanbod/zoeken/?keyword=" + keyword
+        link = link.replace(" ", "%20")
     print(link)
     response = ''
     try:
@@ -26,11 +29,11 @@ def response_to_soup(response):
 print("Welkom bij de Tweakers V&A scraper!")
 userInput = input("Typ de naam van een product: ")
 
-rep = get_response(userInput)
-if rep is '':
+resp = get_response(userInput)
+if resp is '':
     print("Geen resultaten gevonden")
 else:
-    table = response_to_soup(rep).findAll("table")
+    table = response_to_soup(resp).findAll("table")
     for adv in table:
         titles = adv.findAll("p", {"class": "title ellipsis"})
         dates = adv.findAll("span", {"class": "date"})
@@ -39,12 +42,10 @@ else:
         locations = adv.findAll("td", {"class": "location city"})
         locations.extend(adv.findAll("td", {"class": "location city noDistance"}))
 
-        scores = adv.findAll("span", {"class": "sprite"})
-
         users = adv.findAll("td", {"class": "location"})
         users = [x for x in users if x not in locations]
 
-        pretty_table = PrettyTable(["Title", "Date", "Location", "User", "Score", "Prices"])
+        pretty_table = PrettyTable(["Title", "Date", "Location", "User", "Score", "Price"])
         for t, d, loc, u, s, p in zip(titles, dates, locations, users, scores, prices):
             t = t.text.strip("\r\n")
             d = d.text.strip("\r\n")
