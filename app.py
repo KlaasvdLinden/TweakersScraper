@@ -39,8 +39,7 @@ else:
         dates = adv.findAll("span", {"class": "date"})
         scores = adv.findAll("span", {"class": "sprite"})
         prices = adv.findAll("td", {"class": "vaprice"})
-        locations = adv.findAll("td", {"class": "location city"})
-        locations.extend(adv.findAll("td", {"class": "location city noDistance"}))
+        locations = adv.findAll("td", {"class": ["location city", "location city noDistance"]})
 
         users = adv.findAll("td", {"class": "location"})
         users = [x for x in users if x not in locations]
